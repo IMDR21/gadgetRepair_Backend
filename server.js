@@ -9,7 +9,7 @@ import productRoutes from './routes/product.js';
 import userRoutes from './routes/user.js';
 
 const app = express();
-const MONGO_URI = process.env.MONGO_URI;
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
@@ -22,5 +22,5 @@ app.use('/api/users', userRoutes);
 
 app.listen(PORT, () => {
     connectDB();
-    console.log(`Server running on http://localhost:${MONGO_URI}`);
+    console.log(`Server running on http://localhost:${PORT}`);
 });
