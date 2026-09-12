@@ -1,22 +1,45 @@
+import 'dotenv/config';
 import bcrypt from 'bcrypt';
 import User from './models/User.js';
 import connectDB from './db/connection.js';
 
-const register = async () => {
+const seedAdmin = async () => {
     try {
-        connectDB();
-        const hashedPassword = await bcrypt.hash('admin', 10);
-        const newUser = new User({
+        await connectDB();
+
+        const email = 'admin@gmail.com';
+        const password = 'admin';
+
+        const existingAdmin = await User.findOne({ email });
+
+        if (existingAdmin) {
+            console.log('Admin already exists.');
+            process.exit(0);
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const admin = new User({
             name: 'admin',
-            email: 'admin@gmail.com',
+            email,
             password: hashedPassword,
             role: 'admin'
-        })
-        const user = await newUser.save();
-        console.log(user);
-    } catch (error) {
-        console.log(error);
-    }
-}
+        });
 
-register();
+        await admin.save();
+
+        console.log('================================');
+        console.log('Admin created successfully!');
+        console.log('Email:', email);
+        console.log('Password:', password);
+        console.log('Role: admin');
+        console.log('================================');
+
+        process.exit(0);
+    } catch (error) {
+        console.error('Failed to create admin:', error);
+        process.exit(1);
+    }
+};
+
+seedAdmin();
